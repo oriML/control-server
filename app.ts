@@ -23,6 +23,8 @@ app.use(express.urlencoded({
     limit: '50mb'
 }));
 
+app.use('/', (req, res) => res.send({ message: "Hello Vercel test!" }));
+
 app.use(cookieparser());
 
 app.use('/api', publicRoutes);// for public info
