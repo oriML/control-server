@@ -16,13 +16,8 @@ const {
     DB_PROD_INFO,
     DB_PROD_NAME
 } = process.env;
-
-const db = process.env.NODE_ENV === 'production'
-    ?
-    `mongodb+srv://${DB_PROD_USER}:${DB_PROD_PASS}@${DB_PROD_INFO}/${DB_PROD_NAME}`
-    :
-    `mongodb+srv://${DB_DEV_USER}:${DB_DEV_PASS}@${DB_DEV_INFO}/${DB_DEV_NAME}`
-    ;
+const db = `mongodb+srv://${DB_PROD_USER}:${DB_PROD_PASS}@${DB_PROD_INFO}/${DB_PROD_NAME}`
+// const db = process.env.NODE_ENV === 'production' ? `mongodb+srv://${DB_PROD_USER}:${DB_PROD_PASS}@${DB_PROD_INFO}/${DB_PROD_NAME}` : `mongodb+srv://${DB_DEV_USER}:${DB_DEV_PASS}@${DB_DEV_INFO}/${DB_DEV_NAME}`;
 
 mongoose
     .connect(db)
