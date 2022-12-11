@@ -23,7 +23,7 @@ app.use(express.urlencoded({
     limit: '50mb'
 }));
 
-app.use('/', (req, res) => res.send({ message: process.env.NODE_ENV }));
+// app.use('/', (req, res) => res.send({ message: process.env.NODE_ENV }));
 
 app.use(cookieparser());
 
