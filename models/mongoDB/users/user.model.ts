@@ -2,13 +2,9 @@ import mongoose from 'mongoose';
 // defines the structure of the document id like to store in db.
 
 const userSchema = new mongoose.Schema({
-    firstName: {
+    name: {
         type: String,
-        required: false
-    },
-    lastName: {
-        type: String,
-        required: false
+        required: true
     },
     email: {
         type: String,

@@ -5,6 +5,7 @@ import { UserResponseModel } from '../models/user/external/userResponse.model';
 import { UserType } from '../types/user.type';
 import UserService from '../services/users.service';
 import { ConnectionKeysBE } from '../models/auth/mdb/connectionKey.mdb';
+import { UserRegisterModel } from '../models/auth/general/UserRegister.model';
 
 
 function LoginByEmailAndPassword(req: Request | any, res: Response) {
@@ -56,7 +57,7 @@ function LoginByEmailAndPassword(req: Request | any, res: Response) {
 
 async function CreateUserByEmailAndPasswordAction(req: Request, res: Response, next: NextFunction) {
 
-    const { email, password } = req.body;
+    const { email, password, name } = req.body;
     // hash password
     const hash = await AuthService.HashPasswordAction(password);
 
@@ -64,13 +65,21 @@ async function CreateUserByEmailAndPasswordAction(req: Request, res: Response, n
 
         const model: ConnectionKeysBE = { email, hash: hash };
         // create user auth doc and user doc
-        const user = await AuthService.CreateUserByEmailAndPassword(model);
+        const userAuth = await AuthService.CreateUserConnectionKeysByEmailAndPassword(model);
+
+        const userRegisterModel: UserRegisterModel = {
+            email,
+            name,
+            userAuthId: userAuth._id as string
+        };
+
+        const user = await AuthService.CreateUserByEmailAndPassword(userRegisterModel)
         // create jwt request and refresh tokens
         const tokens = AuthService.CreateJWTTokensAction(user._id as string); // {reqToken, refToken}
 
         const userResponse: UserResponseModel = {
-            name: null,
-            email: email,
+            name,
+            email,
             token: tokens.reqToken
         };
 

@@ -12,17 +12,22 @@ import ConnectionKey from '../models/mongoDB/auth/connectionKey.interface'
 import { TokensBE } from '../models/auth/general/TokensBE'
 import UserModel from '../models/mongoDB/users/user.model'
 import { ConnectionKeysBE } from '../models/auth/mdb/connectionKey.mdb'
+import { UserRegisterModel } from '../models/auth/general/UserRegister.model'
 
 require('dotenv').config();
 
-async function CreateUserByEmailAndPassword(model: ConnectionKeysBE): Promise<mongoose.Document<unknown, any, typeof UserModel>> {
+async function CreateUserByEmailAndPassword(model: UserRegisterModel): Promise<mongoose.Document<unknown, any, typeof UserModel>> {
 
-    const userAuth = new ConnectionKey({ email: model.email, hash: model.hash });
-    const userAuthId = await userAuth.save();
-
-    const user = new UserModel({ email: model.email, userAuthId: userAuthId._id })
+    const user = new UserModel(model);
 
     return await user.save();
+};
+
+async function CreateUserConnectionKeysByEmailAndPassword(model: ConnectionKeysBE): Promise<mongoose.Document<string, any, typeof ConnectionKey>> {
+
+    const userAuth = new ConnectionKey({ email: model.email, hash: model.hash });
+    return await userAuth.save();
+
 };
 
 async function AuthUserByCriteria(criteria: LoginRequestModel): Promise<ConnectionKeysBE | null> {
@@ -95,6 +100,7 @@ function CheckIsValidToken(token: string): boolean {
 
 export default {
     CreateUserByEmailAndPassword,
+    CreateUserConnectionKeysByEmailAndPassword,
     AuthUserByCriteria,
     GenerateNewTokenForUser,
     HashPasswordAction,
