@@ -3,8 +3,9 @@ import { MovementCriteria } from "../models/movement/external/movementCriteia.mo
 import MDBMovementModel from '../models/mongoDB/movements/movement.model';
 import { MovementModel } from "../models/movement/mdb/movement.model";
 import { AddMovementRequestModel } from "../models/movement/external/addMovementRequest.model";
+import { GetAllMovementsResponseModel } from "../models/movement/external/getAllMovementsResponse.model";
 
-async function GetMovementsByCriteria(criteria: MovementCriteria) {
+async function GetMovementsByCriteria(criteria: MovementCriteria): Promise<GetAllMovementsResponseModel | undefined> {
     try {
         const date = new Date();
         const month = criteria.month || date.getMonth();
@@ -20,10 +21,32 @@ async function GetMovementsByCriteria(criteria: MovementCriteria) {
                     }
                 }
             ]);
+        const sumOfMovements = await Movement.aggregate([
+            {
+                $match: {
+                    userId: criteria.userId,
+                    type: criteria.type,
+                    month,
+                    year
+                }
+            }
+            ,
+            {
+                $group: {
+                    _id: 0,
+                    totalAmount: { $sum: "$price" },
+                    count: { $sum: 1 }
+                }
+            }
+        ])
         const response = {
             year: year,
             month: month,
-            movements
+            movements,
+            info: {
+                sum: sumOfMovements[0].totalAmount,
+                count: sumOfMovements[0].count
+            }
         }
         return response;
     } catch (error: unknown) {

@@ -1,12 +1,15 @@
+import { MovementModel } from "../mdb/movement.model";
 import { MovementResponseModel } from "./movementResponse.model";
 
 
 export interface GetAllMovementsResponseModel {
-    year: string;
-    months: MovementsResponseMonthModel[];
+    year: number
+    month: number
+    movements: MovementModel[]
+    info: InfoModel
 }[]
 
-export interface MovementsResponseMonthModel {
-    month: string;
-    data: MovementResponseModel[];
+export interface InfoModel {
+    sum: number
+    count: number
 }
