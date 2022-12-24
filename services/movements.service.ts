@@ -44,8 +44,8 @@ async function GetMovementsByCriteria(criteria: MovementCriteria): Promise<GetAl
             month: month,
             movements,
             info: {
-                sum: sumOfMovements[0].totalAmount,
-                count: sumOfMovements[0].count
+                sum: sumOfMovements[0]?.totalAmount ?? 0,
+                count: sumOfMovements[0]?.count ?? 0
             }
         }
         return response;
