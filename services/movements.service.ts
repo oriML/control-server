@@ -19,7 +19,8 @@ async function GetMovementsByCriteria(criteria: MovementCriteria): Promise<GetAl
                         month,
                         year
                     }
-                }
+                },
+                { $sort: { movementDate: -1 } }
             ]);
         const sumOfMovements = await Movement.aggregate([
             {
