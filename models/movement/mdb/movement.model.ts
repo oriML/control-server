@@ -1,4 +1,4 @@
-import { MovementCategoryModel } from "../../category/mdb/category.model";
+import { MovementCategoryModel } from "../../category/category.model";
 
 export interface MovementModel {
     userId: string;
@@ -9,6 +9,6 @@ export interface MovementModel {
     day: number;
     notes: string;
     source: string;
-    type: string;
+    type: number;
     category: MovementCategoryModel;
 }

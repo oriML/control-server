@@ -4,6 +4,7 @@ import MDBMovementModel from '../models/mongoDB/movements/movement.model';
 import { MovementModel } from "../models/movement/mdb/movement.model";
 import { AddMovementRequestModel } from "../models/movement/external/addMovementRequest.model";
 import { GetAllMovementsResponseModel } from "../models/movement/external/getAllMovementsResponse.model";
+import categoriesService from "./categories.service";
 
 async function GetMovementsByCriteria(criteria: MovementCriteria): Promise<GetAllMovementsResponseModel | undefined> {
     try {
@@ -60,6 +61,8 @@ async function AddMovement(currentUserId: string, movement: AddMovementRequestMo
 
     const model = GetModelWithSplitedDates(currentUserId, movement);
 
+    AddCategoryToModel(model);
+
     const mdbMovementModel = new MDBMovementModel(model);
 
     return await mdbMovementModel.save();
@@ -89,6 +92,16 @@ function GetModelWithSplitedDates(currentUserId: string, movement: MovementModel
     };
 
     return model;
+}
+
+async function AddCategoryToModel(model: MovementModel | AddMovementRequestModel) {
+    const category = await categoriesService.FetchCategoryByTerm({ name: model.category.name });
+    if (category != null) {
+        model.category = category;
+    } else {
+        const _category = await categoriesService.CreateCategory(model.category.name, model.type);
+        model.category = _category;
+    }
 }
 
 export default {
