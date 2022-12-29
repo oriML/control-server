@@ -1,6 +1,6 @@
 import Category from "../models/mongoDB/category/category.interface"
 
-interface ITerm {
+interface ITermProps {
     name?: string
 }
 
@@ -13,8 +13,12 @@ async function GetCategoryList(movementType: number) {
     return await Category.find({ movementType });
 }
 
-function FetchCategoryByTerm(term: ITerm) {
-    return Category.findOne({ ...term });
+function FetchCategoryByTerm(term: ITermProps) {
+    return Category.findOne({ name: term.name });
+}
+
+function FetchAllCategoriesByTerm(term: ITermProps) {
+    return Category.find({ "name": { "$regex": term.name, "$options": "i" } });
 }
 
 async function RemoveCategory(id: string) {
@@ -25,5 +29,6 @@ export default {
     CreateCategory,
     GetCategoryList,
     RemoveCategory,
-    FetchCategoryByTerm
+    FetchCategoryByTerm,
+    FetchAllCategoriesByTerm
 }
