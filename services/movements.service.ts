@@ -4,13 +4,14 @@ import MDBMovementModel from '../models/mongoDB/movements/movement.model';
 import { MovementModel } from "../models/movement/mdb/movement.model";
 import { AddMovementRequestModel } from "../models/movement/external/addMovementRequest.model";
 import { GetAllMovementsResponseModel } from "../models/movement/external/getAllMovementsResponse.model";
+import categoriesService from "./categories.service";
 
 async function GetMovementsByCriteria(criteria: MovementCriteria): Promise<GetAllMovementsResponseModel | undefined> {
     try {
         const date = new Date();
         const month = criteria.month || date.getMonth();
         const year = criteria.year || date.getFullYear();
-        const movements = await Movement
+        let movements = await Movement
             .aggregate([
                 {
                     $match: {
@@ -20,7 +21,15 @@ async function GetMovementsByCriteria(criteria: MovementCriteria): Promise<GetAl
                         year
                     }
                 },
-                { $sort: { movementDate: -1 } }
+                { $sort: { movementDate: -1 } },
+                {
+                    $lookup: {
+                        from: "categories",
+                        localField: "category",
+                        foreignField: "_id",
+                        as: "category"
+                    }
+                }
             ]);
         const sumOfMovements = await Movement.aggregate([
             {
@@ -40,6 +49,14 @@ async function GetMovementsByCriteria(criteria: MovementCriteria): Promise<GetAl
                 }
             }
         ])
+        movements = movements.reduce((p, c) => ([
+            ...p,
+            {
+                ...c,
+                category: c.category[0]
+            }
+        ]), []);
+
         const response = {
             year: year,
             month: month,
@@ -60,6 +77,8 @@ async function AddMovement(currentUserId: string, movement: AddMovementRequestMo
 
     const model = GetModelWithSplitedDates(currentUserId, movement);
 
+    await AddCategoryToModel(currentUserId, model);
+
     const mdbMovementModel = new MDBMovementModel(model);
 
     return await mdbMovementModel.save();
@@ -68,6 +87,8 @@ async function AddMovement(currentUserId: string, movement: AddMovementRequestMo
 async function UpdateMovement(id: string, movement: MovementModel) {
 
     const model = GetModelWithSplitedDates(movement.userId, movement);
+
+    await AddCategoryToModel(movement.userId, model);
 
     return await Movement.updateOne({ _id: id }, { ...model });
 }
@@ -89,6 +110,16 @@ function GetModelWithSplitedDates(currentUserId: string, movement: MovementModel
     };
 
     return model;
+}
+
+async function AddCategoryToModel(currentUserId: string, model: MovementModel | AddMovementRequestModel) {
+    const category = await categoriesService.FetchCategoryByTerm({ name: model.category.name });
+    if (category != null) {
+        model.category = category._id;
+    } else {
+        const _category = await categoriesService.CreateCategory(currentUserId, model.category.name, model.type);
+        model.category = _category._id;
+    }
 }
 
 export default {

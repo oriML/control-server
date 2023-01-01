@@ -1,9 +1,9 @@
-import { MovementCategoryModel } from "../../category/mdb/category.model";
+import { MovementCategoryModel } from "../../category/category.model";
 export interface AddMovementRequestModel {
     movementDate: string;
     price: number;
     notes: string;
     source: string;
-    type: string;
+    type: number;
     category: MovementCategoryModel;
 }

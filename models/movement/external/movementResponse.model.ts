@@ -1,4 +1,4 @@
-import { MovementCategoryModel } from "../../category/mdb/category.model";
+import { MovementCategoryModel } from "../../category/category.model";
 
 export interface MovementResponseModel {
     movementDate: Date;

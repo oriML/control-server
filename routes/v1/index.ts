@@ -4,6 +4,7 @@ import { Router } from "express";
 import authRoute from './auth.route'
 import usersRoute from './users.route'
 import movementsRoute from './movements.route'
+import categoriesRoute from './categories.route'
 
 import express from 'express';
 
@@ -22,6 +23,10 @@ const defaultRoutes = [
     {
         path: '/movement',
         route: movementsRoute,
+    },
+    {
+        path: '/categories',
+        route: categoriesRoute,
     },
 
 ];
