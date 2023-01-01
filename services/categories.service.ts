@@ -4,8 +4,8 @@ interface ITermProps {
     name?: string
 }
 
-function CreateCategory(name: string, movementType: number) {
-    const category = new Category({ name, movementType });
+function CreateCategory(userId: string, name: string, movementType: number) {
+    const category = new Category({ userId, name, movementType });
     return category.save();
 }
 

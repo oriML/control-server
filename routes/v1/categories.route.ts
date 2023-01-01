@@ -5,7 +5,8 @@ import catchAsync from '../../utils/catchAsync';
 const router = express.Router();
 
 router.get('/:term', catchAsync(categoriesController.GetAllCategoriesByTerm));//login
-// router.post('/', authController.addUser);// registration
+
+router.post('/create', catchAsync(categoriesController.AddCategoryByName));// registration
 
 // router.put('/', authController.editUser);
 

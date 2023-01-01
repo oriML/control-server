@@ -61,7 +61,7 @@ async function AddMovement(currentUserId: string, movement: AddMovementRequestMo
 
     const model = GetModelWithSplitedDates(currentUserId, movement);
 
-    AddCategoryToModel(model);
+    await AddCategoryToModel(currentUserId, model);
 
     const mdbMovementModel = new MDBMovementModel(model);
 
@@ -94,13 +94,13 @@ function GetModelWithSplitedDates(currentUserId: string, movement: MovementModel
     return model;
 }
 
-async function AddCategoryToModel(model: MovementModel | AddMovementRequestModel) {
+async function AddCategoryToModel(currentUserId: string, model: MovementModel | AddMovementRequestModel) {
     const category = await categoriesService.FetchCategoryByTerm({ name: model.category.name });
     if (category != null) {
-        model.category = category;
+        model.category = category._id;
     } else {
-        const _category = await categoriesService.CreateCategory(model.category.name, model.type);
-        model.category = _category;
+        const _category = await categoriesService.CreateCategory(currentUserId, model.category.name, model.type);
+        model.category = _category._id;
     }
 }
 
