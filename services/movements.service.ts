@@ -11,7 +11,7 @@ async function GetMovementsByCriteria(criteria: MovementCriteria): Promise<GetAl
         const date = new Date();
         const month = criteria.month || date.getMonth();
         const year = criteria.year || date.getFullYear();
-        const movements = await Movement
+        let movements = await Movement
             .aggregate([
                 {
                     $match: {
@@ -21,7 +21,15 @@ async function GetMovementsByCriteria(criteria: MovementCriteria): Promise<GetAl
                         year
                     }
                 },
-                { $sort: { movementDate: -1 } }
+                { $sort: { movementDate: -1 } },
+                {
+                    $lookup: {
+                        from: "categories",
+                        localField: "category",
+                        foreignField: "_id",
+                        as: "category"
+                    }
+                }
             ]);
         const sumOfMovements = await Movement.aggregate([
             {
@@ -41,6 +49,14 @@ async function GetMovementsByCriteria(criteria: MovementCriteria): Promise<GetAl
                 }
             }
         ])
+        movements = movements.reduce((p, c) => ([
+            ...p,
+            {
+                ...c,
+                category: c.category[0]
+            }
+        ]), []);
+
         const response = {
             year: year,
             month: month,
@@ -71,6 +87,8 @@ async function AddMovement(currentUserId: string, movement: AddMovementRequestMo
 async function UpdateMovement(id: string, movement: MovementModel) {
 
     const model = GetModelWithSplitedDates(movement.userId, movement);
+
+    await AddCategoryToModel(movement.userId, model);
 
     return await Movement.updateOne({ _id: id }, { ...model });
 }

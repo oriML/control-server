@@ -4,21 +4,21 @@ interface ITermProps {
     name?: string
 }
 
-function CreateCategory(userId: string, name: string, movementType: number) {
+async function CreateCategory(userId: string, name: string, movementType: number) {
     const category = new Category({ userId, name, movementType });
-    return category.save();
+    return await category.save();
 }
 
 async function GetCategoryList(movementType: number) {
     return await Category.find({ movementType });
 }
 
-function FetchCategoryByTerm(term: ITermProps) {
-    return Category.findOne({ name: term.name });
+async function FetchCategoryByTerm(term: ITermProps) {
+    return await Category.findOne({ name: term.name });
 }
 
-function FetchAllCategoriesByTerm(term: ITermProps) {
-    return Category.find({ "name": { "$regex": term.name, "$options": "i" } });
+async function FetchAllCategoriesByTerm(term: ITermProps) {
+    return await Category.find({ "name": { "$regex": term.name, "$options": "i" } });
 }
 
 async function RemoveCategory(id: string) {

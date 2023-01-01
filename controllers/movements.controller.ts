@@ -23,7 +23,7 @@ async function AddMovementAction(req: Request, res: Response, next: NextFunction
                 movement?.movementDate
             ) {
 
-                const movementResponeModel = MovementsService.AddMovement(currentUserId, movement);
+                const movementResponeModel = await MovementsService.AddMovement(currentUserId, movement);
 
                 return res.status(200).json(movementResponeModel);
             }
