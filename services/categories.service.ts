@@ -18,7 +18,7 @@ async function FetchCategoryByTerm(term: ITermProps) {
 }
 
 async function FetchAllCategoriesByTerm(term: ITermProps, userId: string) {
-    return await Category.find({ "userId": userId, "name": { "$regex": term.name, "$options": "i" } });
+    return await Category.find({ "userId": userId, "name": { "$regex": `^${term.name}`, "$options": "i" } });
 }
 
 async function RemoveCategory(id: string) {
