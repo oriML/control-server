@@ -5,10 +5,10 @@ import CategoriesService from '../services/categories.service'
 async function GetAllCategoriesByTerm(req: Request | any, res: Response) {
     try {
         const { term } = req.params;
-
+        const currentUserId = res.locals.currentUserId;
         const model = { name: term }
 
-        const categories = await CategoriesService.FetchAllCategoriesByTerm(model);
+        const categories = await CategoriesService.FetchAllCategoriesByTerm(model, currentUserId);
         const response = categories.map(category => (
             {
                 _id: category._id,
