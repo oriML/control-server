@@ -1,10 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import { AddMovementRequestModel } from '../models/movement/external/addMovementRequest.model';
 import { MovementModel } from '../models/movement/mdb/movement.model';
-import Movement from '../models/mongoDB/movements/movement.model';
 import { MovementCriteria } from '../models/movement/external/movementCriteia.model';
 import MovementsService from '../services/movements.service';
-import { GetAllMovementsResponseModel } from '../models/movement/external/getAllMovementsResponse.model';
 import movementsService from '../services/movements.service';
 
 async function AddMovementAction(req: Request, res: Response, next: NextFunction) {
@@ -14,7 +11,7 @@ async function AddMovementAction(req: Request, res: Response, next: NextFunction
 
         if (currentUserId != null) {
 
-            const movement: AddMovementRequestModel = req.body;
+            const movement: MovementModel = req.body;
 
             if (
                 movement?.price &&

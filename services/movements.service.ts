@@ -2,7 +2,6 @@ import Movement from "../models/mongoDB/movements/movement.model";
 import { MovementCriteria } from "../models/movement/external/movementCriteia.model";
 import MDBMovementModel from '../models/mongoDB/movements/movement.model';
 import { MovementModel } from "../models/movement/mdb/movement.model";
-import { AddMovementRequestModel } from "../models/movement/external/addMovementRequest.model";
 import { GetAllMovementsResponseModel } from "../models/movement/external/getAllMovementsResponse.model";
 import categoriesService from "./categories.service";
 
@@ -73,7 +72,7 @@ async function GetMovementsByCriteria(criteria: MovementCriteria): Promise<GetAl
     }
 }
 
-async function AddMovement(currentUserId: string, movement: AddMovementRequestModel) {
+async function AddMovement(currentUserId: string, movement: MovementModel) {
 
     const model = GetModelWithSplitedDates(currentUserId, movement);
 
@@ -97,7 +96,7 @@ async function DeleteMovement(id: string) {
     return await Movement.findOneAndDelete({ _id: id });
 }
 
-function GetModelWithSplitedDates(currentUserId: string, movement: MovementModel | AddMovementRequestModel) {
+function GetModelWithSplitedDates(currentUserId: string, movement: MovementModel) {
 
     const date: string[] = movement.movementDate.split('-');
 
@@ -112,7 +111,7 @@ function GetModelWithSplitedDates(currentUserId: string, movement: MovementModel
     return model;
 }
 
-async function AddCategoryToModel(currentUserId: string, model: MovementModel | AddMovementRequestModel) {
+async function AddCategoryToModel(currentUserId: string, model: MovementModel) {
     const category = await categoriesService.FetchCategoryByTerm({ name: model.category.name });
     if (category != null) {
         model.category = category._id;
