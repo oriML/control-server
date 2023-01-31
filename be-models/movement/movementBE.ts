@@ -1,6 +1,6 @@
-import { MovementCategoryModel } from "../../category/category.model";
+import { IMovementCategoryBE } from "../category/categoryBE";
 
-export interface MovementModel {
+export interface IMovementBE {
     userId: string;
     movementDate: string;
     price: number;
@@ -10,5 +10,5 @@ export interface MovementModel {
     notes: string;
     source: string;
     type: number;
-    category: MovementCategoryModel;
+    category: IMovementCategoryBE;
 }

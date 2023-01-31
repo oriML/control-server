@@ -1,4 +1,4 @@
-import { MovementSourceType } from "../../../types/movementSource.enum";
+import { MovementSourceType } from "../../enums";
 
 export interface MovementSourceModel {
     userId: string;

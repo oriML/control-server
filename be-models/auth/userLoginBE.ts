@@ -1,4 +1,4 @@
-export interface LoginRequestModel {
+export interface IUserLoginBE {
     email: string;
     password: string;
 }

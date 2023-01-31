@@ -1,11 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import { LoginRequestModel } from '../models/auth/external/LoginRequestModel';
 import AuthService from '../services/auth.service';
-import { UserResponseModel } from '../models/user/external/userResponse.model';
-import { UserType } from '../types/user.type';
+import { UserResponseModel } from '../models/user/userModel';
 import UserService from '../services/users.service';
-import { ConnectionKeysBE } from '../models/auth/mdb/connectionKey.mdb';
-import { UserRegisterModel } from '../models/auth/general/UserRegister.model';
+import { ConnectionKeysBE } from '../models/auth/connectionKeyBE';
+import { UserRegisterModel } from '../models/auth/userRegisterModel';
+import { IUserLoginModel } from '../models/auth/userLoginModel';
 
 
 async function LoginByEmailAndPassword(req: Request | any, res: Response) {
@@ -13,7 +12,7 @@ async function LoginByEmailAndPassword(req: Request | any, res: Response) {
 
         const { email, password } = req.body;
 
-        const userCriteria: LoginRequestModel = { email, password };
+        const userCriteria: IUserLoginModel = { email, password };
 
         const authUser = await AuthService.AuthUserByCriteria(userCriteria)
         // check if user password is valid

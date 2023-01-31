@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { MovementModel } from '../models/movement/mdb/movement.model';
-import { MovementCriteria } from '../models/movement/external/movementCriteia.model';
+import { MovementCriteria } from '../models/movement/movement.criteia';
+import { IMovementModel } from '../models/movement/movementModel';
 import MovementsService from '../services/movements.service';
 import movementsService from '../services/movements.service';
 
@@ -11,7 +11,7 @@ async function AddMovementAction(req: Request, res: Response, next: NextFunction
 
         if (currentUserId != null) {
 
-            const movement: MovementModel = req.body;
+            const movement = req.body as IMovementModel;
 
             if (
                 movement?.price &&
@@ -51,7 +51,7 @@ async function GetMovementsByCriteria(req: Request, res: Response, next: NextFun
 async function UpdateMovement(req: Request, res: Response, next: NextFunction) {
     try {
 
-        const movement: MovementModel = req.body;
+        const movement = req.body as IMovementModel;
         // const movement: 
         const { id } = req.params;
 

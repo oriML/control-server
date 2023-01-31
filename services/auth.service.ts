@@ -6,13 +6,13 @@ import jwt from 'jsonwebtoken'
 
 import admin from '../config/firebase-config'
 
-import { LoginRequestModel } from '../models/auth/external/LoginRequestModel'
 
-import ConnectionKey from '../models/mongoDB/auth/connectionKey.interface'
-import { TokensBE } from '../models/auth/general/TokensBE'
-import UserModel from '../models/mongoDB/users/user.model'
-import { ConnectionKeysBE } from '../models/auth/mdb/connectionKey.mdb'
-import { UserRegisterModel } from '../models/auth/general/UserRegister.model'
+import ConnectionKey from '../entities/connectionKey.mdb'
+import { TokensBE } from '../models/auth/tokensBE'
+import UserModel from '../entities/user.mdb'
+import { ConnectionKeysBE } from '../models/auth/connectionKeyBE'
+import { UserRegisterModel } from '../models/auth/userRegisterModel'
+import { IUserLoginModel } from '../models/auth/userLoginModel'
 
 require('dotenv').config();
 
@@ -30,7 +30,7 @@ async function CreateUserConnectionKeysByEmailAndPassword(model: ConnectionKeysB
 
 };
 
-async function AuthUserByCriteria(criteria: LoginRequestModel): Promise<ConnectionKeysBE | null> {
+async function AuthUserByCriteria(criteria: IUserLoginModel): Promise<ConnectionKeysBE | null> {
     // auth user from db by criteria
     const { email } = criteria;
 
