@@ -1,9 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
 import { MovementCriteria } from '../models/movement/movement.criteia';
 import { IMovementModel } from '../models/movement/movementModel';
-import MovementsService from '../services/movements.service';
+import MovementsService, { MovementService } from '../services/movements.service';
 import movementsService from '../services/movements.service';
+import BaseController from './base/base.controller';
 
+
+export class MovementController implements BaseController<MovementService>{
+
+}
 async function AddMovementAction(req: Request, res: Response, next: NextFunction) {
     try {
 

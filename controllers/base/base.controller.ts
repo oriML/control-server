@@ -1,7 +1,7 @@
 import IBaseController from "../interface/base.interface.controller";
-import IBaseBusiness from '../../business/interface/base.interface.business'
+import IBaseService from '../../services/interface/base.interface.service'
 
-interface BaseController<T extends IBaseBusiness<Object>> extends IBaseController {
+interface BaseController<T extends IBaseService<Object>> extends IBaseController {
 
 }
 

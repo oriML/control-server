@@ -1,4 +1,4 @@
-export interface Criteria {
+export interface ICriteria {
     createDate?: Date;
     updatedDate?: Date;
     sort?: string;

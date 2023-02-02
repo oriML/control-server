@@ -1,6 +1,6 @@
-import { Criteria } from "../../shared/criteria.shared";
+import { ICriteria } from "../../shared/criteria.shared";
 
-export interface MovementCriteria extends Criteria {
+export interface IMovementCriteria extends ICriteria {
     userId?: string;
     type: number;
     createDate?: Date;
