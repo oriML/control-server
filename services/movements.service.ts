@@ -1,6 +1,5 @@
 import Movement, { movementDA } from "../entities/movement.mdb";
 import { IMovementCriteria } from "../models/movement/movement.criteia";
-import MDBMovementModel from '../entities/movement.mdb';
 import categoriesService from "./categories.service";
 import { IMovementModel } from "../models/movement/movementModel";
 import { MovementController } from "../controllers/movements.controller";
@@ -171,5 +170,3 @@ export class MovementService implements IBaseService<IMovementModel, IMovementCr
         }
     }
 }
-
-export default MovementController;

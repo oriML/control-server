@@ -1,98 +1,101 @@
-import { NextFunction, Request, Response } from 'express';
-import { MovementCriteria } from '../models/movement/movement.criteia';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
+import { IMovementCriteria } from '../models/movement/movement.criteia';
 import { IMovementModel } from '../models/movement/movementModel';
-import MovementsService, { MovementService } from '../services/movements.service';
-import movementsService from '../services/movements.service';
+import { MovementService } from '../services/movements.service';
 import BaseController from './base/base.controller';
 
 
 export class MovementController implements BaseController<MovementService>{
 
-}
-async function AddMovementAction(req: Request, res: Response, next: NextFunction) {
-    try {
+    private readonly _service: MovementService;
 
-        const currentUserId = res.locals.currentUserId;
+    constructor(
+    ) {
+        this._service = new MovementService();
+    }
 
-        if (currentUserId != null) {
+    getById(req: Request, res: Response, next: NextFunction) {
+
+    }
+    async create(req: Request, res: Response, next: NextFunction) {
+        try {
+
+            const currentUserId = res.locals.currentUserId;
+
+            if (currentUserId != null) {
+
+                const movement = req.body as IMovementModel;
+
+                if (
+                    movement?.price &&
+                    movement?.source &&
+                    movement?.type &&
+                    movement?.movementDate
+                ) {
+
+                    const movementResponeModel = await this._service.create(currentUserId, movement);
+
+                    return res.status(200).json(movementResponeModel);
+                }
+
+                return res.status(500).json({ message: "not valid record!" });
+            }
+        } catch (error) {
+
+            if (error instanceof Error)
+                throw new Error(error.message);
+
+            return res.send(500).json({ message: error });
+        }
+
+    };
+
+    async getByCriteria(req: Request, res: Response, next: NextFunction) {
+
+        const criteria: IMovementCriteria = req.body;
+
+        criteria.userId = res.locals.currentUserId;
+
+        const results = await this._service.getByCriteria(criteria);
+
+        return res.send(results);
+    }
+
+    async update(req: Request, res: Response, next: NextFunction) {
+        try {
 
             const movement = req.body as IMovementModel;
+            // const movement: 
+            const { id } = req.params;
 
-            if (
-                movement?.price &&
-                movement?.source &&
-                movement?.type &&
-                movement?.movementDate
-            ) {
+            const updatedMovement = this._service.update(id, movement);
 
-                const movementResponeModel = await MovementsService.AddMovement(currentUserId, movement);
+            return res.send(updatedMovement);
 
-                return res.status(200).json(movementResponeModel);
-            }
+        } catch (error) {
+            if (error instanceof Error)
+                throw new Error(error.message);
 
-            return res.status(500).json({ message: "not valid record!" });
+            return res.send(500).json({ message: error });
         }
-    } catch (error) {
-
-        if (error instanceof Error)
-            throw new Error(error.message);
-
-        return res.send(500).json({ message: error });
     }
 
-};
+    async delete(req: Request, res: Response, next: NextFunction) {
+        try {
 
-async function GetMovementsByCriteria(req: Request, res: Response, next: NextFunction) {
+            // const movement: 
+            const { id } = req.params;
 
-    const criteria: MovementCriteria = req.body;
+            this._service.delete(id);
 
-    criteria.userId = res.locals.currentUserId;
+            return res.sendStatus(200);
 
-    const results = await MovementsService.GetMovementsByCriteria(criteria);
+        } catch (error) {
+            if (error instanceof Error)
+                throw new Error(error.message);
 
-    return res.send(results);
-}
-
-async function UpdateMovement(req: Request, res: Response, next: NextFunction) {
-    try {
-
-        const movement = req.body as IMovementModel;
-        // const movement: 
-        const { id } = req.params;
-
-        const updatedMovement = movementsService.UpdateMovement(id, movement);
-
-        return res.send(updatedMovement);
-
-    } catch (error) {
-        if (error instanceof Error)
-            throw new Error(error.message);
-
-        return res.send(500).json({ message: error });
+            return res.send(500).json({ message: error });
+        }
     }
-}
 
-async function DeleteMovement(req: Request, res: Response, next: NextFunction) {
-    try {
-
-        // const movement: 
-        const { id } = req.params;
-
-        movementsService.DeleteMovement(id);
-
-        return res.sendStatus(200);
-
-    } catch (error) {
-        if (error instanceof Error)
-            throw new Error(error.message);
-
-        return res.send(500).json({ message: error });
-    }
-}
-
-export default {
-    AddMovementAction,
-    GetMovementsByCriteria,
-    UpdateMovement,
-    DeleteMovement,
 }
