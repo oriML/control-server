@@ -1,4 +1,4 @@
-import Movement from "../entities/movement.mdb";
+import Movement, { movementDA } from "../entities/movement.mdb";
 import { IMovementCriteria } from "../models/movement/movement.criteia";
 import MDBMovementModel from '../entities/movement.mdb';
 import categoriesService from "./categories.service";
@@ -7,25 +7,51 @@ import { MovementController } from "../controllers/movements.controller";
 import IBaseService from "./interface/base.interface.service";
 import { MovementRepository } from "../repositories/movements.repository";
 import { IPaginationResponse } from '../shared/paginationResponse.shared'
+import { ErrorsModel } from "../models/errorsModel";
 export class MovementService implements IBaseService<IMovementModel, IMovementCriteria>{
 
-    private _movementRepository: MovementRepository;
+    private _repository: MovementRepository;
 
     constructor() {
-        this._movementRepository = new MovementRepository();
+        this._repository = new MovementRepository();
     }
-    create(item: IMovementModel) {
 
+    validateModel(item: IMovementModel, errors: ErrorsModel) {
+        if (!item) {
+            errors.add('item cannot be null');
+            return false;
+        } else {
+            if (!item.movementDate) {
+                errors.add('item must have valid date');
+            }
+            if (typeof item.price != 'number') {
+                errors.add('item price must be a number');
+            }
+            if (!item.source) {
+                errors.add('item must have a source');
+            }
+            if (!item.type) {
+                errors.add('item must have a type');
+            }
+        }
+        return errors.isEmpty();
     };
-    getById(_id: string) {
 
-    };
-    update(_id: string, item: IMovementModel) {
+    async create(item: IMovementModel, errors: ErrorsModel) {
+        if (item && this.validateModel(item, errors)) {
 
-    };
-    delete(_id: string) {
+            const movement = new movementDA(item);
 
+            const _movement = await this._repository.create(movement);
+
+            return _movement;
+        }
     };
+
+    async getById(_id: string) {
+        return await this._repository.getById(_id);
+    };
+
     // implement interface to accept only extends ICriteria params
     async getByCriteria(criteria: IMovementCriteria): Promise<IPaginationResponse<IMovementModel> | null> {
         try {
@@ -104,29 +130,20 @@ export class MovementService implements IBaseService<IMovementModel, IMovementCr
         return null;
     }
 
-    async addMovement(currentUserId: string, movement: IMovementModel) {
+    async update(_id: string, item: IMovementModel, errors: ErrorsModel) {
+        if (item && this.validateModel(item, errors)) {
 
-        const model = this.getModelWithSplitedDates(currentUserId, movement);
+            const movement = new movementDA(item);
 
-        await this.addCategoryToModel(currentUserId, model);
+            const _movement = await this._repository.update(_id, movement);
 
-        const mdbMovementModel = new MDBMovementModel(model);
+            return _movement;
+        }
+    };
 
-        return await mdbMovementModel.save();
-    }
-
-    async updateMovement(id: string, movement: IMovementModel) {
-
-        const model = this.getModelWithSplitedDates(movement.userId, movement);
-
-        await this.addCategoryToModel(movement.userId, model);
-
-        return await Movement.updateOne({ _id: id }, { ...model });
-    }
-
-    async feleteMovement(id: string) {
-        return await Movement.findOneAndDelete({ _id: id });
-    }
+    delete(_id: string) {
+        return this._repository.delete(_id);
+    };
 
     getModelWithSplitedDates(currentUserId: string, movement: IMovementModel) {
 
@@ -143,6 +160,7 @@ export class MovementService implements IBaseService<IMovementModel, IMovementCr
         return model;
     }
 
+    // set on category repo
     async addCategoryToModel(currentUserId: string, model: IMovementModel) {
         const category = await categoriesService.FetchCategoryByTerm({ name: model.category.name });
         if (category != null) {
