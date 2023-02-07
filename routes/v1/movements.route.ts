@@ -1,17 +1,34 @@
 import express from 'express';
+import { MovementController } from '../../controllers/movements.controller';
 import catchAsync from '../../utils/catchAsync';
 
-import movementsController from '../../controllers/movements.controller';
 const router = express.Router();
 
-// router.get('/', catchAsync(movementsController.getMovementAction));//login
+class MovementRouter {
 
-router.post('/addMovement', catchAsync(movementsController.AddMovementAction));
+    private _controller: MovementController;
 
-router.post('/getAllMovements', catchAsync(movementsController.GetMovementsByCriteria));
+    constructor() {
+        this._controller = new MovementController();
+    }
 
-router.post('/update/:id', movementsController.UpdateMovement);
+    get routes() {
 
-router.delete('/delete/:id', movementsController.DeleteMovement);
+        const controller = this._controller;
 
-export default router;
+        router.post('/getById', catchAsync(controller.getById));
+
+        router.post('/getByCriteria', catchAsync(controller.getByCriteria));
+
+        router.post('/create', catchAsync(controller.create));
+
+        router.post('/update/:id', catchAsync(controller.update));
+
+        router.delete('/delete/:id', catchAsync(controller.delete));
+
+        return router;
+
+    }
+}
+
+export default MovementRouter;
