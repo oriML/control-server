@@ -1,4 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
+import { ErrorsModel } from '../models/errorsModel';
 import { IMovementCriteria } from '../models/movement/movement.criteia';
 import { IMovementModel } from '../models/movement/movementModel';
 import { MovementService } from '../services/movements.service';
@@ -15,8 +16,40 @@ export class MovementController implements BaseController<MovementService>{
     }
 
     getById(req: Request, res: Response, next: NextFunction) {
+        try {
 
+            const { id } = req.body;
+
+            return this._service.getById(id);
+
+        } catch (error) {
+            if (error instanceof Error)
+                throw new Error(error.message);
+
+            return res.send(500).json({ message: error });
+
+        }
     }
+
+    async getByCriteria(req: Request, res: Response, next: NextFunction) {
+        try {
+
+            const criteria: IMovementCriteria = req.body;
+
+            criteria.userId = res.locals.currentUserId;
+
+            const results = await this._service.getByCriteria(criteria);
+
+            return res.send(results);
+
+        } catch (error) {
+            if (error instanceof Error)
+                throw new Error(error.message);
+
+            return res.send(500).json({ message: error });
+        }
+    }
+
     async create(req: Request, res: Response, next: NextFunction) {
         try {
 
@@ -26,19 +59,19 @@ export class MovementController implements BaseController<MovementService>{
 
                 const movement = req.body as IMovementModel;
 
-                if (
-                    movement?.price &&
-                    movement?.source &&
-                    movement?.type &&
-                    movement?.movementDate
-                ) {
+                const errors = new ErrorsModel();
 
-                    const movementResponeModel = await this._service.create(currentUserId, movement);
+                const movementResponeModel = await this._service.create(movement, errors);
+
+                if (errors.isEmpty()) {
 
                     return res.status(200).json(movementResponeModel);
-                }
 
-                return res.status(500).json({ message: "not valid record!" });
+                } else {
+
+                    return res.status(500).json({ message: errors.errors });
+
+                }
             }
         } catch (error) {
 
@@ -50,25 +83,16 @@ export class MovementController implements BaseController<MovementService>{
 
     };
 
-    async getByCriteria(req: Request, res: Response, next: NextFunction) {
-
-        const criteria: IMovementCriteria = req.body;
-
-        criteria.userId = res.locals.currentUserId;
-
-        const results = await this._service.getByCriteria(criteria);
-
-        return res.send(results);
-    }
-
     async update(req: Request, res: Response, next: NextFunction) {
         try {
 
             const movement = req.body as IMovementModel;
-            // const movement: 
+
+            const errors = new ErrorsModel();
+
             const { id } = req.params;
 
-            const updatedMovement = this._service.update(id, movement);
+            const updatedMovement = this._service.update(id, movement, errors);
 
             return res.send(updatedMovement);
 
@@ -83,7 +107,6 @@ export class MovementController implements BaseController<MovementService>{
     async delete(req: Request, res: Response, next: NextFunction) {
         try {
 
-            // const movement: 
             const { id } = req.params;
 
             this._service.delete(id);
