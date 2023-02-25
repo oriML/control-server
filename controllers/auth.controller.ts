@@ -2,9 +2,9 @@ import { NextFunction, Request, Response } from 'express';
 import AuthService from '../services/auth.service';
 import { UserResponseModel } from '../models/user/userModel';
 import UserService from '../services/users.service';
-import { ConnectionKeysBE } from '../models/auth/connectionKeyBE';
 import { UserRegisterModel } from '../models/auth/userRegisterModel';
 import { IUserLoginModel } from '../models/auth/userLoginModel';
+import { ConnectionKeysBE } from '../business/auth/connectionKeyBE';
 
 
 async function LoginByEmailAndPassword(req: Request | any, res: Response) {

@@ -7,7 +7,8 @@ import IBaseService from "./interface/base.interface.service";
 import { MovementRepository } from "../repositories/movements.repository";
 import { IPaginationResponse } from '../shared/paginationResponse.shared'
 import { ErrorsModel } from "../models/errorsModel";
-export class MovementService implements IBaseService<IMovementModel, IMovementCriteria>{
+import { IMovementService } from "./interface/movements.interface.service";
+export class MovementService implements IMovementService {
 
     private _repository: MovementRepository;
 
@@ -37,13 +38,12 @@ export class MovementService implements IBaseService<IMovementModel, IMovementCr
     };
 
     async create(item: IMovementModel, errors: ErrorsModel) {
-        if (item && this.validateModel(item, errors)) {
+        if (this.validateModel(item, errors)) {
 
             const movement = new movementDA(item);
 
-            const _movement = await this._repository.create(movement);
+            await this._repository.create(movement);
 
-            return _movement;
         }
     };
 

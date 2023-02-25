@@ -4,15 +4,14 @@ import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
-import admin from '../config/firebase-config'
 
 
 import ConnectionKey from '../entities/connectionKey.mdb'
-import { TokensBE } from '../models/auth/tokensBE'
 import UserModel from '../entities/user.mdb'
-import { ConnectionKeysBE } from '../models/auth/connectionKeyBE'
 import { UserRegisterModel } from '../models/auth/userRegisterModel'
 import { IUserLoginModel } from '../models/auth/userLoginModel'
+import { ConnectionKeysBE } from '../business/auth/connectionKeyBE'
+import { TokensBE } from '../business/auth/tokensBE'
 
 require('dotenv').config();
 
