@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
+import { Model, Document } from 'mongoose';
 import { IBaseRepository } from './interfaces/base.repository';
 
 
-export class baseRepository<T extends mongoose.Model<T>> implements IBaseRepository<T>{
+export class baseRepository<T extends Model<any>> implements IBaseRepository<T>{
 
     private readonly dbContext: T;
 
@@ -19,8 +19,21 @@ export class baseRepository<T extends mongoose.Model<T>> implements IBaseReposit
     };
 
     public async getByCriteria(criteria: any): Promise<T[]> {
+        const _sort = criteria.sort;
+        delete criteria.sort;
         return await new Promise((resolve, reject) => {
-
+            this.dbContext.aggregate([
+                {
+                    $match: {
+                        ...criteria
+                    }
+                },
+                {
+                    $sort: {
+                        ..._sort
+                    }
+                }
+            ])
         });
     };
 

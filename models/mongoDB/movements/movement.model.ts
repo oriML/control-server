@@ -52,3 +52,17 @@ const movementSchema = new mongoose.Schema({
 
 const Movement = mongoose.model('Movement', movementSchema);
 export default Movement;
+
+// export interface IMovement {
+//     userId: string,
+//     price: number,
+//     notes: string,
+//     source: number,
+//     type: number,
+//     category: string,
+//     year: number,
+//     month: number,
+//     day: number,
+//     createdAt: Date,
+//     movementDate: Date
+// }
