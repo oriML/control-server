@@ -3,7 +3,7 @@ import { AddMovementRequestModel } from '../models/movement/external/addMovement
 import { MovementModel } from '../models/movement/mdb/movement.model';
 import Movement from '../models/mongoDB/movements/movement.model';
 import { MovementCriteria } from '../models/movement/external/movementCriteia.model';
-import MovementsService from '../services/movements.service';
+import MovementsService, { movementService } from '../services/movements.service';
 import { GetAllMovementsResponseModel } from '../models/movement/external/getAllMovementsResponse.model';
 import movementsService from '../services/movements.service';
 

@@ -4,6 +4,48 @@ import MDBMovementModel from '../models/mongoDB/movements/movement.model';
 import { MovementModel } from "../models/movement/mdb/movement.model";
 import { AddMovementRequestModel } from "../models/movement/external/addMovementRequest.model";
 import { GetAllMovementsResponseModel } from "../models/movement/external/getAllMovementsResponse.model";
+import { movementRepository } from "../repositories/movement.repository";
+
+export class movementService {
+
+    constructor(
+        private readonly movementRepository: movementRepository<MovementModel>,
+    ) { }
+
+    public async getByCriteria(criteria: MovementCriteria) {
+
+        const data = await this.movementRepository.getByCriteria(criteria);
+        // change from be to model
+        return data;
+    }
+
+    public async getById(id: string) {
+
+        // change from model to be
+        const data = await this.movementRepository.getById(id);
+        // change from be to model
+        return data;
+    }
+
+    public async update(model: MovementModel) {
+
+        // change from model to be
+        // await this.movementRepository.update();
+        // change from be to model
+
+        return model;
+    }
+
+    public async delete(id: string) {
+
+        const entity = await this.movementRepository.getById(id);
+
+        entity.isDeleted = true;
+
+        this.movementRepository.update(entity);
+    }
+
+}
 
 async function GetMovementsByCriteria(criteria: MovementCriteria): Promise<GetAllMovementsResponseModel | undefined> {
     try {

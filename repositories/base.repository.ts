@@ -12,39 +12,34 @@ export class baseRepository<T extends Model<any>> implements IBaseRepository<T>{
         this.dbContext = {} as T;
     }
 
-    public async getById(id: string): Promise<T> {
-        return await new Promise((resolve, reject) => {
-
-        });
+    public async getById(id: string) {
+        return await this.dbContext.findById(id).exec();
     };
 
-    public async getByCriteria(criteria: any): Promise<T[]> {
-        const _sort = criteria.sort;
+    public async getByCriteria(criteria: any) {
+        const _sort = { ...criteria.sort };
         delete criteria.sort;
-        return await new Promise((resolve, reject) => {
-            this.dbContext.aggregate([
-                {
-                    $match: {
-                        ...criteria
-                    }
-                },
-                {
-                    $sort: {
-                        ..._sort
-                    }
+        return await this.dbContext.aggregate([
+            {
+                $match: {
+                    ...criteria
                 }
-            ])
-        });
+            },
+            {
+                $sort: {
+                    ..._sort
+                }
+            }
+        ])
+            .exec();
     };
 
-    public async update(entity: T): Promise<T> {
-        return await new Promise((resolve, reject) => {
-
-        });
+    public async update(entity: T) {
+        return await this.dbContext.findByIdAndUpdate(entity).exec();
     };
 
     public async delete(id: string) {
-
+        return await this.dbContext.findByIdAndDelete(id).exec();
     };
 
 
