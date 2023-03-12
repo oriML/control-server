@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import e, { NextFunction, Request, Response } from 'express';
 
 import CategoriesService from '../services/categories.service'
 
@@ -31,12 +31,22 @@ async function AddCategoryByName(req: Request | any, res: Response) {
 
         const currentUserId = res.locals.currentUserId;
 
-        const category = await CategoriesService.CreateCategory(currentUserId, name, 1);
-        const response = {
-            _id: category._id,
-            name: category.name
+        if (currentUserId != null) {
+            if (name != null) {
+
+                const category = await CategoriesService.CreateCategory(currentUserId, name, 1);
+
+                const response = {
+                    _id: category._id,
+                    name: category.name
+                }
+                return res.send(response)
+            } else {
+                throw new Error("category name is undefined");
+            }
+        } else {
+            throw new Error("cannot identify user");
         }
-        return res.send(response)
 
     } catch (error) {
         if (error instanceof Error)
