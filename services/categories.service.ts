@@ -5,8 +5,15 @@ interface ITermProps {
 }
 
 async function CreateCategory(userId: string, name: string, movementType: number) {
-    const category = new Category({ userId, name, movementType });
-    return await category.save();
+
+    const categories = await FetchAllCategoriesByTerm({ name }, userId);
+
+    if (categories.length > 0) {
+        return null;
+    } else {
+        const category = new Category({ userId, name, movementType });
+        return await category.save();
+    }
 }
 
 async function GetCategoryList(movementType: number) {
