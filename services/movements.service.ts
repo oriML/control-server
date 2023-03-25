@@ -2,10 +2,10 @@ import Movement from "../models/mongoDB/movements/movement.model";
 import { MovementCriteria } from "../models/movement/external/movementCriteia.model";
 import MDBMovementModel from '../models/mongoDB/movements/movement.model';
 import { MovementModel } from "../models/movement/mdb/movement.model";
-import { GetAllMovementsResponseModel } from "../models/movement/external/getAllMovementsResponse.model";
 import categoriesService from "./categories.service";
+import { PaginationRequest } from "../models";
 
-async function GetMovementsByCriteria(criteria: MovementCriteria): Promise<GetAllMovementsResponseModel | undefined> {
+async function GetMovementsByCriteria(criteria: MovementCriteria): Promise<PaginationRequest<MovementModel>> {
     try {
         const date = new Date();
         const month = criteria.month || date.getMonth();
@@ -52,23 +52,21 @@ async function GetMovementsByCriteria(criteria: MovementCriteria): Promise<GetAl
             ...p,
             {
                 ...c,
-                category: c.category[0]
+                category: c.category[0]?.name
             }
         ]), []);
 
-        const response = {
-            year: year,
-            month: month,
-            movements,
-            info: {
-                sum: sumOfMovements[0]?.totalAmount ?? 0,
-                count: sumOfMovements[0]?.count ?? 0
-            }
+        const response: PaginationRequest<MovementModel> = {
+            data: movements,
+            count: sumOfMovements[0]?.count ?? 0,
+            sum: sumOfMovements[0]?.totalAmount ?? 0
         }
         return response;
     } catch (error: unknown) {
-        if (error instanceof Error)
+        if (error instanceof Error) {
             throw new Error(error.message);
+        }
+        throw new Error('unknown error');
     }
 }
 
@@ -112,11 +110,11 @@ function GetModelWithSplitedDates(currentUserId: string, movement: MovementModel
 }
 
 async function AddCategoryToModel(currentUserId: string, model: MovementModel) {
-    const category = await categoriesService.FetchCategoryByTerm({ name: model.category.name });
+    const category = await categoriesService.FetchCategoryByTerm({ name: model.category });
     if (category != null) {
         model.category = category._id;
     } else {
-        const _category = await categoriesService.CreateCategory(currentUserId, model.category.name, model.type);
+        const _category = await categoriesService.CreateCategory(currentUserId, model.category, model.type);
         model.category = _category._id;
     }
 }

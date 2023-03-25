@@ -1,6 +1,7 @@
 import { MovementCategoryModel } from "../../category/category.model";
 
 export interface MovementModel {
+    id?: string;
     userId: string;
     movementDate: string;
     price: number;
@@ -10,5 +11,5 @@ export interface MovementModel {
     notes: string;
     source: string;
     type: number;
-    category: MovementCategoryModel;
+    category: string;
 }
