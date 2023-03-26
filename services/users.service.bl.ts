@@ -1,4 +1,4 @@
-import userModel from "../models/mongoDB/users/user.model"
+import userModel from "../entities/users/user.be"
 
 async function getUserByEmail(email: string) {
     const user = await userModel.findOne({ email });

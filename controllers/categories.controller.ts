@@ -1,6 +1,6 @@
 import e, { NextFunction, Request, Response } from 'express';
 
-import CategoriesService from '../services/categories.service'
+import CategoriesService from '../services/categories.service.bl'
 
 async function GetAllCategoriesByTerm(req: Request | any, res: Response) {
     try {

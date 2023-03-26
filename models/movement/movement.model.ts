@@ -1,4 +1,3 @@
-import { MovementCategoryModel } from "../../category/category.model";
 
 export interface MovementModel {
     id?: string;

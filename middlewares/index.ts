@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from 'jsonwebtoken'
-import userModel from "../models/mongoDB/users/user.model";
+import userModel from "../entities/users/user.be";
 
 require('dotenv').config();
 

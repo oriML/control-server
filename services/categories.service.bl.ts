@@ -1,4 +1,4 @@
-import Category from "../models/mongoDB/category/category.interface"
+import Category from "../entities/category/category.be"
 
 interface ITermProps {
     name?: string

@@ -1,8 +1,7 @@
-import Movement from "../models/mongoDB/movements/movement.model";
-import { MovementCriteria } from "../models/movement/external/movementCriteia.model";
-import MDBMovementModel from '../models/mongoDB/movements/movement.model';
-import { MovementModel } from "../models/movement/mdb/movement.model";
-import categoriesService from "./categories.service";
+import Movement from "../entities/movements/movement.be";
+import { MovementCriteria } from "../models/movement/movementCriteia.model";
+import { MovementModel } from "../models/movement/movement.model";
+import categoriesService from "./categories.service.bl";
 import { PaginationRequest } from "../models";
 
 async function GetMovementsByCriteria(criteria: MovementCriteria): Promise<PaginationRequest<MovementModel>> {
@@ -76,7 +75,7 @@ async function AddMovement(currentUserId: string, movement: MovementModel) {
 
     await AddCategoryToModel(currentUserId, model);
 
-    const mdbMovementModel = new MDBMovementModel(model);
+    const mdbMovementModel = new Movement(model);
 
     return await mdbMovementModel.save();
 }
