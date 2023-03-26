@@ -6,13 +6,13 @@ import jwt from 'jsonwebtoken'
 
 import admin from '../config/firebase-config'
 
-import { LoginRequestModel } from '../models/auth/external/LoginRequestModel'
+import { LoginRequestModel } from '../models/auth/login-request.model'
 
-import ConnectionKey from '../models/mongoDB/auth/connectionKey.interface'
-import { TokensBE } from '../models/auth/general/TokensBE'
-import UserModel from '../models/mongoDB/users/user.model'
-import { ConnectionKeysBE } from '../models/auth/mdb/connectionKey.mdb'
-import { UserRegisterModel } from '../models/auth/general/UserRegister.model'
+import ConnectionKey from '../entities/auth/connection-key.be'
+import { TokensBE } from '../entities/auth/tokens.be'
+import UserModel from '../entities/users/user.be'
+import { UserRegisterModel } from '../models/auth/user-register.model'
+import { ConnectionKeysBE } from '../entities/auth/connection-key.interface'
 
 require('dotenv').config();
 

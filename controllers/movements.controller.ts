@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import { MovementModel } from '../models/movement/mdb/movement.model';
-import { MovementCriteria } from '../models/movement/external/movementCriteia.model';
-import MovementsService from '../services/movements.service';
-import movementsService from '../services/movements.service';
+import { MovementModel } from '../models/movement/movement.model';
+import { MovementCriteria } from '../models/movement/movementCriteia.model';
+import MovementsService from '../services/movements.service.bl';
+import movementsService from '../services/movements.service.bl';
 
 async function AddMovementAction(req: Request, res: Response, next: NextFunction) {
     try {

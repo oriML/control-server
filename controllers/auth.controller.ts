@@ -1,11 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import { LoginRequestModel } from '../models/auth/external/LoginRequestModel';
-import AuthService from '../services/auth.service';
-import { UserResponseModel } from '../models/user/external/userResponse.model';
-import { UserType } from '../types/user.type';
-import UserService from '../services/users.service';
-import { ConnectionKeysBE } from '../models/auth/mdb/connectionKey.mdb';
-import { UserRegisterModel } from '../models/auth/general/UserRegister.model';
+import { LoginRequestModel } from '../models/auth/login-request.model';
+import AuthService from '../services/auth.service.bl';
+import { UserResponseModel } from '../models/user/user-response.model';
+import UserService from '../services/users.service.bl';
+import { ConnectionKeysBE } from '../entities/auth/connection-key.interface';
+import { UserRegisterModel } from '../models/auth/user-register.model';
 
 
 async function LoginByEmailAndPassword(req: Request | any, res: Response) {
